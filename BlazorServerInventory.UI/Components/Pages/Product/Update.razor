@@ -1,0 +1,49 @@
+﻿@page "/product/update/{id:int}"
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<h3>Update Product</h3>
+
+<EditForm Model="@product" FormName="updateProduct">
+    <div class="form-group">
+        <label for="Name">Name</label>
+        <InputText id="ProductName" class="form-control" @bind-Value="product.ProductName" />
+    </div>
+    <div class="form-group">
+        <label for="Description">Description</label>
+        <InputText id="ProductDescription" class="form-control" @bind-Value="product.ProductDescription" />
+    </div>
+    <div class="form-group">
+        <label for="Category">Category</label>
+        <InputSelect @bind-Value="product.CategoryId" class="form-control">
+            @foreach (var category in categories)
+            {
+                <option value="@category.Id">@category.CategoryName</option>
+            }
+        </InputSelect>
+    </div>
+    <button type="submit" class="btn btn-primary" @onclick="SaveProduct">Update</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    ProductEntity product = new ProductEntity();
+    List<CategoryEntity> categories = new List<CategoryEntity>();
+
+    protected override void OnInitialized()
+    {
+        CategoryService categoryService = new();
+        categories = categoryService.List();
+        product = new ProductService().Get(Id);
+    }
+
+    private void SaveProduct()
+    {
+        ProductService productService = new();
+        //product.ProductCode = Guid.NewGuid().ToString();
+        productService.Update(product);
+        NavigationManager.NavigateTo("/product/list");
+    }
+}

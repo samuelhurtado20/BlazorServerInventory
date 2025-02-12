@@ -1,0 +1,58 @@
+﻿@page "/storage/create"
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<h3>Create Storage</h3>
+
+<EditForm Model="@storage" FormName="createStorage">
+    <div class="form-group">
+        <label for="Warehouse">Warehouse</label>
+        <InputSelect @bind-Value="storage.WarehouseId" class="form-control">
+            @foreach (var w in warehouses)
+            {
+                <option value="@w.Id">@w.WarehouseName</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="form-group">
+        <label for="Product">Product</label>
+        <InputSelect @bind-Value="storage.ProductId" class="form-control">
+            @foreach (var p in products)
+            {
+                <option value="@p.Id">@p.ProductName</option>
+            }
+        </InputSelect>
+    </div>
+    <button type="submit" class="btn btn-primary" @onclick="SaveStorage">Save Storage</button>
+    @message
+</EditForm>
+
+@code {
+    StorageEntity storage = new StorageEntity();
+    List<ProductEntity> products = new List<ProductEntity>();
+    List<WarehouseEntity> warehouses = new List<WarehouseEntity>();
+    string message = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        warehouses = new WarehouseService().List();
+        products = new ProductService().List();
+    }
+
+    private void SaveStorage()
+    {
+        var storageService = new StorageService();
+        var code = storage.WarehouseId + "-" + storage.ProductId;
+        if (!storageService.GetByCode(code))
+        {
+            storage.StorageCode = code;
+            storage.LastUpdate = DateTime.Now;
+            storageService.Create(storage);
+            NavigationManager.NavigateTo("/product/list");
+        }
+        else
+        {
+            message = "Storage already exists!";
+        }
+    }
+}

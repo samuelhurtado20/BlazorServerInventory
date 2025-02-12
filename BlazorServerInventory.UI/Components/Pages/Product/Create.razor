@@ -1,0 +1,43 @@
+﻿@page "/product/create"
+@rendermode InteractiveServer
+
+<h3>Create Product</h3>
+
+<EditForm Model="@product" FormName="addProduct">
+    <div class="form-group" >
+        <label for="Name">Name</label>
+        <InputText id="ProductName" class="form-control" @bind-Value="product.ProductName" />
+    </div>
+    <div class="form-group">
+        <label for="Description">Description</label>
+        <InputText id="ProductDescription" class="form-control" @bind-Value="product.ProductDescription" />
+    </div>
+    <div class="form-group">
+        <label for="Category">Category</label>
+        <InputSelect @bind-Value="product.CategoryId" class="form-control">
+            @foreach (var category in categories)
+            {
+                <option value="@category.Id">@category.CategoryName</option>
+            }
+        </InputSelect>
+    </div>
+    <button type="submit" class="btn btn-primary" @onclick="SaveProduct">Save</button>
+</EditForm>
+
+@code {
+    ProductEntity product = new ProductEntity();
+    List<CategoryEntity> categories = new List<CategoryEntity>();
+
+    protected override void OnInitialized()
+    {
+        CategoryService categoryService = new();
+        categories = categoryService.List();
+    }
+
+    private void SaveProduct()
+    {
+        ProductService productService = new();
+        product.ProductCode = Guid.NewGuid().ToString();
+        productService.Create(product);
+    }
+}

@@ -1,0 +1,83 @@
+﻿@page "/inout/create"
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<h3>Create InOut</h3>
+
+<div class="form-group col-4">
+    <label for="Warehouse">Warehouse</label>
+    <select class="form-control" @onchange="LoadProducts">
+        <option value="">Select Warehouse</option>
+        @foreach (var w in warehouses)
+        {
+            <option value="@w.Id">@w.WarehouseName</option>
+        }
+    </select>
+</div>
+<hr class="form-group col-4" />
+<EditForm Model="@inOut" FormName="createInOut">
+    <div class="form-group col-4">
+        <label for="Product">Product</label>
+        <InputSelect @bind-Value="inOut.StorageId" class="form-control">
+            <option value="">Select Product</option>
+            @foreach (var s in storages)
+            {
+                <option value="@s.Id">@s.Product.ProductName</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="form-group col-4">
+        <label for="Quantity">Quantity</label>
+        <InputNumber @bind-Value="inOut.Quantity" class="form-control" />
+    </div>
+    <div class="form-group col-4">
+        <label for="Product">Is Input or Output?</label>
+        <InputSelect @bind-Value="isInput" class="form-control">
+            <option value="1">Input</option>
+            <option value="0">Output</option>
+        </InputSelect>
+    </div>
+    <hr class="form-group col-4" />
+    <button type="submit" class="btn btn-primary" @onclick="SaveInOut">Save InOut</button>
+    @message
+</EditForm>
+
+@code {
+    InOutEntity inOut = new InOutEntity();
+    List<StorageEntity> storages = new List<StorageEntity>();
+    List<WarehouseEntity> warehouses = new List<WarehouseEntity>();
+    string message = string.Empty;
+    string isInput = "1";
+
+    protected override void OnInitialized()
+    {
+        warehouses = new WarehouseService().List();
+    }
+
+    private void SaveInOut()
+    {
+        var inOutService = new InOutService();
+        StorageEntity storageEntity = storages.LastOrDefault(s => s.Id == inOut.StorageId)!;
+        ProductEntity productEntity = storageEntity.Product;
+
+        storageEntity.PartialQuantity = isInput == "1" ? storageEntity.PartialQuantity + inOut.Quantity : storageEntity.PartialQuantity - inOut.Quantity;
+        StorageService storageService = new StorageService();
+        storageService.Update(storageEntity);
+        productEntity.ProductTotalQuantity = isInput == "1" ? productEntity.ProductTotalQuantity + inOut.Quantity : productEntity.ProductTotalQuantity - inOut.Quantity;
+        new ProductService().Update(productEntity);
+
+        inOut.IsInput = isInput == "1";
+        inOut.InOutDate = DateTime.Now;
+
+        inOutService.Create(inOut);
+        NavigationManager.NavigateTo("/product/list");
+    }
+
+    private void LoadProducts(ChangeEventArgs e)
+    {
+        int warehouseId = Convert.ToInt32(e.Value);
+        var storageService = new StorageService();
+        storages = storageService.GetProductsByWarehouse(warehouseId);
+    }
+
+}

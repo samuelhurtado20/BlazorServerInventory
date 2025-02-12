@@ -1,0 +1,73 @@
+﻿@page "/product/list"
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<h3>List</h3>
+
+<select class="form-control" @onchange="CategoryChanged">
+    <option value="">SELECT AN OPTION...</option>
+    @foreach (var category in categories)
+    {
+        <option value="@category.Id">@category.CategoryName</option>
+    }
+</select>
+
+<table class="table table-hover table-bordered">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Category</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var product in tempProducts)
+        {
+            <tr>
+                <td>@product.Id</td>
+                <td>@product.ProductName</td>
+                <td>@product.ProductDescription</td>
+                <td>@product.CategoryId</td>
+                <td>
+                    <button title="Edit" class="btn btn-warning btn-delete" @onclick="@(() => Edit(product))">Edit</button>
+                
+                </td>
+            </tr>
+        }
+    </tbody>
+    </table>
+
+@code {
+    List<ProductEntity> products = new List<ProductEntity>();
+    List<ProductEntity> tempProducts = new List<ProductEntity>();
+    List<CategoryEntity> categories = new List<CategoryEntity>();
+
+    protected override void OnInitialized()
+    {
+        ProductService productService = new();
+        products = productService.List();
+        tempProducts = products;
+        CategoryService categoryService = new();
+        categories = categoryService.List();
+    }
+
+    private void CategoryChanged(ChangeEventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(e.Value?.ToString()))
+        {
+            tempProducts = products;
+        }
+        else
+        {
+            tempProducts = products.Where(p => p.CategoryId.ToString() == e.Value.ToString()).ToList();
+        }
+    }
+
+    private void Edit(ProductEntity product)
+    {
+        NavigationManager.NavigateTo($"/product/update/{product.Id}");
+    }
+
+}

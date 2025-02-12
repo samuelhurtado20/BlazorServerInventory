@@ -1,0 +1,60 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">BlazorServerInventory.UI</a>
+    </div>
+</div>
+
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+
+<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="product/list">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Products
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="product/create">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Create Product
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="warehouse/list">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Warehouses
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="warehouse/create">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Create Warehouse
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="storage/list">
+                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Storages
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="storage/create">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Create Storage
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="inout/create">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> In - Out
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
