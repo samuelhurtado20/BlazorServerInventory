@@ -1,42 +1,16 @@
-﻿@page "/storage/list"
+﻿@page "/warehouse/list"
 @inject NavigationManager NavigationManager
 @rendermode InteractiveServer
 
-<h3>List Storage</h3>
-
-<table class="table table-bordered table">
-    <thead>
-        <tr>
-            <th>Id</th>
-            <th>StorageCode</th>
-            <th>PartialQuantity</th>
-            <th>WarehouseId</th>
-            <th>ProductId</th>
-            <th>LastUpdate</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var storage in storages)
-        {
-            <tr>
-                <td>@storage.Id</td>
-                <td>@storage.StorageCode</td>
-                <td>@storage.PartialQuantity</td>
-                <td>@storage.ProductId</td>
-                <td>@storage.WarehouseId</td>
-                <td>@storage.LastUpdate</td>
-            </tr>
-        }
-    </tbody>
-</table>
+<div class="row">
+    <div class="form-group col-4">
+        <h3>Warehouse List</h3>
+    </div>
+    <div class="form-group col-4">
+        <a href="Warehouse/create">Create new warehouse</a>
+    </div>
+</div>
 
 @code {
-    List<StorageEntity> storages = new List<StorageEntity>();
-    StorageService storageService = new StorageService();
-
-    protected override void OnInitialized()
-    {
-        storages = storageService.List();
-    }
 
 }

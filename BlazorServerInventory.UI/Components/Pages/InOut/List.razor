@@ -1,0 +1,57 @@
+﻿@page "/inout/list"
+@inject NavigationManager NavigationManager
+@rendermode InteractiveServer
+
+<div class="row">
+    <div class="form-group col-4">
+        <h3>InOut List</h3>
+    </div>
+    <div class="form-group col-4">
+        <a href="inout/create">Create new InOut</a>
+    </div>
+</div>
+
+<table class="table table-hover table-bordered">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Storage</th>
+            <th>Quantity</th>
+            <th>IsInput</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var inOut in tempInOuts)
+        {
+            <tr>
+                <td>@inOut.Id</td>
+                <td>@inOut.StorageId</td>
+                <td>@inOut.Quantity</td>
+                <td>@(inOut.IsInput ? "Input" : "Output")</td>
+                <td>
+                    @inOut.InOutDate
+                </td>
+                <td>
+                    @* <button title="Edit" class="btn btn-warning btn-delete" @onclick="@(() => Edit(inOut))">Edit</button> *@
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@code {
+
+    List<InOutEntity> inOuts = new List<InOutEntity>();
+    List<InOutEntity> tempInOuts = new List<InOutEntity>();
+    List<StorageEntity> storages = new List<StorageEntity>();
+
+    protected override void OnInitialized()
+    {
+        InOutService inOutService = new();
+        inOuts = inOutService.List();
+        tempInOuts = inOuts;
+        StorageService storageService = new();
+        storages = storageService.List();
+    }
+
+}
